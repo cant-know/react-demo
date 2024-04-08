@@ -10,7 +10,7 @@ import { Outlet, To, useLocation } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { reqUserInfo } from '../../store/modules/user'
+import { reqUserInfo, removeUserInfo } from '../../store/modules/user'
 
 const { Header, Sider } = Layout
 
@@ -46,7 +46,14 @@ const GeekLayout = () => {
     dispatch(reqUserInfo() as never)
   },[dispatch])
 
-  const [name] = useSelector(state => state.user.userinfo.name)
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const name = useSelector(state => state.user.userInfo?.name)
+
+  const onConfirm = () => {
+    dispatch(removeUserInfo())
+    navigate('/login')
+  }
   return (
     <Layout>
       <Header className="header">
@@ -54,7 +61,7 @@ const GeekLayout = () => {
         <div className="user-info">
           <span className="user-name">{name}</span>
           <span className="user-logout">
-            <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
+            <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消" onConfirm={onConfirm}>
               <LogoutOutlined /> 退出
             </Popconfirm>
           </span>
